@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="ja" ng-app="SpaTestApp">
+<head>
+<meta charset="UTF-8">
+<title>SPAテスト</title>
+<script type="text/javascript" src="./js/lib/angular.min.js"></script>
+<script type="text/javascript">
+	var app = angular.module('SpaTestApp', []);
+	app.controller('SpaTestController', ["$scope", "$http", function($scope, $http) {
+
+    // init counter
+    var refresh = function() {
+      $http({
+        method: "GET",
+        url: "https://ad5f1pql15.execute-api.ap-northeast-1.amazonaws.com/dev/yanaseCounterIncrementFunction",
+        timeout: 5000
+      }).
+      then(function onSuccess(response) {
+        $scope.count = response.data.Item.Count;
+      }, function onError(response) {
+        console.error(response);
+      });
+    };
+    refresh();
+
+    // increment function
+    $scope.increment = function() {
+      $http({
+        method: "POST",
+        url: "https://ad5f1pql15.execute-api.ap-northeast-1.amazonaws.com/dev/yanaseCounterIncrementFunction",
+        timeout: 5000
+      }).
+      then(function onSuccess(response) {
+        refresh();
+      }, function onError(response) {
+        console.error(response);
+      });
+    };
+	}]);
+</script>
+
+</head>
+<body ng-controller="SpaTestController">
+  <input type="text" ng-model="count" />
+  <input type="button" ng-click="increment()" value="加算" />
+</body>
+</html>
